@@ -11,7 +11,7 @@ interface FeeInterface
     public function getRecommendedFee(): array;
 
     /**
-     * @return array ['currentLoad' => string]
+     * @return array ['currentLoad' => int]
      */
     public function getCurrentLoad(): array;
 
