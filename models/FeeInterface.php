@@ -16,6 +16,11 @@ interface FeeInterface
     public function getCurrentLoad(): array;
 
     /**
+     * @return array [fee => weight(WU)]
+     */
+    public function getMempool(): array;
+
+    /**
      * @return integer
      */
     public function getRecommendedFeeFromApi(): int;

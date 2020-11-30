@@ -20,27 +20,43 @@ class FeeTest extends Unit
         $this->feeService = new $modelClassName;
     }
 
-    public function testGetRecommendedFee() {
+    public function testGetRecommendedFee()
+    {
         $recommendedFee = $this->feeService->getRecommendedFee();
         $this->assertIsNumeric($recommendedFee['recommendedFee']);
     }
-    public function testGetCurrentLoad() {
+    public function testGetCurrentLoad()
+    {
         $currentLoad = $this->feeService->getCurrentLoad();
         $this->assertIsNumeric($currentLoad['currentLoad']);
     }
-    public function testGetRecommendedFeeFromApi() {
+
+    public function testGetMempool()
+    {
+        $mempool = $this->feeService->getMempool();
+        $this->assertIsArray($mempool);
+    }
+
+    public function testGetRecommendedFeeFromApi()
+    {
         $recommendedFee = $this->feeService->getRecommendedFeeFromApi();
         $this->assertIsNumeric($recommendedFee);
     }
-    public function testGetMempoolFromApi() {
+
+    public function testGetMempoolFromApi()
+    {
         $mempool = $this->feeService->getMempoolFromApi();
         $this->assertIsArray($mempool);
     }
-    public function testGetCurrentMempoolWeight() {
+
+    public function testGetCurrentMempoolWeight()
+    {
         $weight = $this->feeService->getCurrentMempoolWeight();
         $this->assertIsNumeric($weight);
     }
-    public function testGetBlocksMinFee() {
+
+    public function testGetBlocksMinFee()
+    {
         $blocks = $this->feeService->getBlocksMinFee();
         $this->assertIsArray($blocks);
     }
