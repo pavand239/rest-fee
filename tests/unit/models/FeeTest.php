@@ -2,22 +2,30 @@
 
 namespace tests\unit\models;
 
+use restFee\components\Config;
+use restFee\models\FeeInterface;
 use Yii;
 use Codeception\Test\Unit;
+use yii\base\InvalidConfigException;
 
 /**
  * Class FeeTest
  * @package tests\unit\models
- * @property  \restFee\models\FeeInterface $feeService
+ * @property  FeeInterface $feeService
  */
 class FeeTest extends Unit
 {
     private $feeService;
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function _before()
     {
-        $modelClassName = Yii::$app->config->get('API_MODEL_CLASSNAME');
-        $this->feeService = new $modelClassName;
+        /** @var Config $config */
+        $config = Yii::$app->get('config');
+        $className = $config->get('API_MODEL_CLASSNAME');
+        $this->feeService = new $className;
     }
 
     public function testGetRecommendedFee()
