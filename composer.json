@@ -2,7 +2,10 @@
   "require": {
     "yiisoft/yii2": "~2.0.0",
     "yiisoft/yii2-debug": "~2.0",
-    "yiisoft/yii2-httpclient": "*"
+    "yiisoft/yii2-httpclient": "*",
+    "codeception/codeception": "2.1.*",
+    "codeception/specify": "*",
+    "codeception/verify": "*"
   },
   "repositories": [
     {

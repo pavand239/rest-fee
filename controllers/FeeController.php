@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace restFee\controllers;
 
-use restFee\models\BitcoinerLiveFee;
 use yii\rest\Controller;
+use Yii;
 
 class FeeController extends Controller
 {
     public $feeService;
+
     public function beforeAction($action) {
-        $this->feeService = new BitcoinerLiveFee();
+        $modelClassName = Yii::$app->config->get('API_MODEL_CLASSNAME');
+        $this->feeService = new $modelClassName;
         return parent::beforeAction($action);
     }
     public function actionIndex() {

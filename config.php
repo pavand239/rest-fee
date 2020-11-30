@@ -10,6 +10,7 @@ $config = [
         '@restFee' => __DIR__,
     ],
     'defaultRoute' => 'fee/index',
+    'bootstrap' => ['log','config'],
     'components' => [
         'user' => [
             'identityClass' => 'restFee\models\User',
@@ -39,7 +40,10 @@ $config = [
             'username' => 'pavand239',
             'password' => 'P@ssw0rd',
             'charset' => 'utf8',
-        ]
+        ],
+        'config' => [
+            'class' => 'restFee\components\Config',
+        ],
     ],
 ];
 
