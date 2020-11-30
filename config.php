@@ -1,5 +1,7 @@
 <?php
 
+use yii\web\Response;
+
 $config = [
     'id' => 'rest-fee',
     // basePath (базовый путь) приложения будет каталог `rest-fee`
@@ -21,6 +23,9 @@ $config = [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ]
+        ],
+        'response' => [
+            'format' =>  Response::FORMAT_JSON
         ],
         'cache' => [
             'class' => 'yii\caching\DbCache',

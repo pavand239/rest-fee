@@ -55,7 +55,7 @@ $config = [
                 'mempool-weight' => 'fee/mempool-weight',
                 'blocks-min-fee' => 'fee/blocks-min-fee',
             ],
-        ]
+        ],
     ],
 ];
 
