@@ -44,6 +44,18 @@ $config = [
         'config' => [
             'class' => 'restFee\components\Config',
         ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
+            'showScriptName' => false,
+            'rules' => [
+                '' => 'fee/index',
+                'recommended' => 'fee/recommended',
+                'load' => 'fee/load',
+                'mempool-weight' => 'fee/mempool-weight',
+                'blocks-min-fee' => 'fee/blocks-min-fee',
+            ],
+        ]
     ],
 ];
 
