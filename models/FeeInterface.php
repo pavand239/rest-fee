@@ -1,27 +1,37 @@
 <?php
+declare(strict_types=1);
 
 namespace restFee\models;
 
 interface FeeInterface
 {
     /**
-     * @return array ['recommendedFee' => float]
-     *
+     * @return array ['recommendedFee' => int]
      */
-    public static function getRecommendedFee();
+    public function getRecommendedFee(): array;
 
     /**
      * @return array ['currentLoad' => string]
      */
-    public static function getCurrentLoad();
+    public function getCurrentLoad(): array;
+
+    /**
+     * @return integer
+     */
+    public function getRecommendedFeeFromApi(): int;
+
+    /**
+     * @return array
+     */
+    public function getMempoolFromApi(): array;
 
     /**
      * @return float
      */
-    public function getRecommendedFeeFromApi();
+    public function getCurrentMempoolWeight(): float;
 
     /**
-     * @return string
+     * @return array
      */
-    public function getCurrentLoadFromApi();
+    public function getBlocksMinFee(): array;
 }

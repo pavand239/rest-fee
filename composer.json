@@ -1,7 +1,8 @@
 {
   "require": {
     "yiisoft/yii2": "~2.0.0",
-    "yiisoft/yii2-debug": "~2.0"
+    "yiisoft/yii2-debug": "~2.0",
+    "yiisoft/yii2-httpclient": "*"
   },
   "repositories": [
     {

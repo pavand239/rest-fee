@@ -22,7 +22,7 @@ $config = [
             ]
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => 'yii\caching\DbCache',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -33,6 +33,13 @@ $config = [
                 ],
             ],
         ],
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=restFee',
+            'username' => 'pavand239',
+            'password' => 'P@ssw0rd',
+            'charset' => 'utf8',
+        ]
     ],
 ];
 
