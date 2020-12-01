@@ -5,31 +5,12 @@ namespace restFee\models;
 
 use UnexpectedValueException;
 use Yii;
-use yii\httpclient\Client;
+
 use yii\httpclient\Exception;
 
-class BitcoinerLiveFee implements FeeInterface
+class BitcoinerLiveFee extends FeeAbstract
 {
-    private const BASE_URL = 'https://bitcoiner.live/api';
-    /** @var Client  */
-    public $client;
-
-    public function __construct()
-    {
-        $this->client = new Client(['baseUrl' => self::BASE_URL]);
-    }
-
-    /**
-     * возвращает размер рекомендованной комиссии с кэшированием
-     * @return array ['recommendedFee' => int]
-     */
-    public function getRecommendedFee(): array
-    {
-        $fee = Yii::$app->cache->getOrSet('recommendedFee', function () {
-            return $this->getRecommendedFeeFromApi();
-        }, 60);
-        return ['recommendedFee'=>$fee];
-    }
+    protected $baseUrl = 'https://bitcoiner.live/api';
 
     /**
      * возвращает нагрузку сети с кэшированием
@@ -99,10 +80,10 @@ class BitcoinerLiveFee implements FeeInterface
         return $response->data['mempool'];
     }
 
+
     /**
      * возвращает текущий вес мемпула
-     * @return float mempool weight
-     * @throws Exception
+     * @return float
      */
     public function getCurrentMempoolWeight(): float
     {
@@ -113,7 +94,6 @@ class BitcoinerLiveFee implements FeeInterface
     /**
      * возвращает массив вида [номер блока => мин комиссия для попадания]
      * @return array [blockNum => minFee]
-     * @throws Exception
      */
     public function getBlocksMinFee(): array
     {
@@ -127,23 +107,16 @@ class BitcoinerLiveFee implements FeeInterface
         // поэтому храним размер блока в отдельной переменной
         $blockMaxWeight = 4*1048576;
         foreach ($mempool as $fee => $weight) {
-            // преобразуем вес в мегабайты
-            // $weight = $weight;
             $fee = intval($fee);
             if (($currentWeight + $weight)  < $blockMaxWeight) {
-                // если на очередной итерации не набираем нужный для формирования блока вес
-                // добавляем вес итерации и переписываем размер комисии
                 $currentWeight += $weight;
             } else  {
-                // если набираем
                 $currentWeight += $weight;
                 while ($currentWeight >= $blockMaxWeight) {
                     // записываем в рез. массив комиссию итерации
                     $blocksMinFee[$blockNum] = $fee;
                     $blockNum++;
                     $currentWeight-=$blockMaxWeight;
-                    // после первой записи переписываем максимальный размер блока
-
                 }
             }
         }
