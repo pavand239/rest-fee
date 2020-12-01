@@ -9,6 +9,7 @@ use Yii;
 abstract class FeeAbstract
 {
     protected $baseUrl;
+    protected $currency;
     /** @var Client  */
     public $client;
 
@@ -22,7 +23,7 @@ abstract class FeeAbstract
      */
     public function getRecommendedFee(): array
     {
-        $fee = Yii::$app->cache->getOrSet('recommendedFee', function () {
+        $fee = Yii::$app->cache->getOrSet($this->currency.'_recommendedFee', function () {
             return $this->getRecommendedFeeFromApi();
         }, 60);
         return ['recommendedFee'=>$fee];

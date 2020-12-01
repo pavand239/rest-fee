@@ -11,6 +11,7 @@ use yii\httpclient\Exception;
 class BitcoinerLiveFee extends FeeAbstract
 {
     protected $baseUrl = 'https://bitcoiner.live/api';
+    protected $currency = 'BTC';
 
     /**
      * возвращает нагрузку сети с кэшированием

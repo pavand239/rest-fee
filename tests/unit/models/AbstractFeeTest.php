@@ -3,19 +3,21 @@
 namespace tests\unit\models;
 
 use restFee\components\Config;
-use restFee\models\FeeInterface;
+use restFee\models\FeeAbstract;
 use Yii;
 use Codeception\Test\Unit;
 use yii\base\InvalidConfigException;
 
 /**
- * Class FeeTest
+ * Class AbstractFeeTest
  * @package tests\unit\models
- * @property  FeeInterface $feeService
+ * @property  FeeAbstract $feeService
  */
-class FeeTest extends Unit
+abstract class AbstractFeeTest extends Unit
 {
-    private $feeService;
+    protected const PARAM_NAME = '_API_MODEL_CLASSNAME';
+    protected $feeService;
+    protected $currency;
 
     /**
      * @throws InvalidConfigException
@@ -24,7 +26,7 @@ class FeeTest extends Unit
     {
         /** @var Config $config */
         $config = Yii::$app->get('config');
-        $className = $config->get('API_MODEL_CLASSNAME');
+        $className = $config->get($this->currency.static::PARAM_NAME);
         $this->feeService = new $className;
     }
 
@@ -32,6 +34,8 @@ class FeeTest extends Unit
     {
         $recommendedFee = $this->feeService->getRecommendedFee();
         $this->assertIsNumeric($recommendedFee['recommendedFee']);
+        echo print_r($recommendedFee);
+        codecept_debug($recommendedFee);
     }
     public function testGetCurrentLoad()
     {
@@ -49,6 +53,8 @@ class FeeTest extends Unit
     {
         $recommendedFee = $this->feeService->getRecommendedFeeFromApi();
         $this->assertIsNumeric($recommendedFee);
+        echo print_r($recommendedFee);
+        codecept_debug($recommendedFee);
     }
 
     public function testGetMempoolFromApi()
