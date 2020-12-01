@@ -5,9 +5,11 @@ namespace restFee\models;
 
 use yii\httpclient\Client;
 use Yii;
+use yii\web\NotFoundHttpException;
 
 abstract class FeeAbstract
 {
+    protected const UNAVAILABLE_METHOD_MESSAGE = 'Method unavailable for this currency';
     protected $baseUrl;
     protected $currency;
     /** @var Client  */
@@ -28,34 +30,53 @@ abstract class FeeAbstract
         }, 60);
         return ['recommendedFee'=>$fee];
     }
-
-    /**
-     * @return array ['currentLoad' => int]
-     */
-    abstract public function getCurrentLoad(): array;
-
-    /**
-     * @return array [fee => weight(WU)]
-     */
-    abstract public function getMempool(): array;
-
     /**
      * @return integer
      */
     abstract public function getRecommendedFeeFromApi(): int;
 
     /**
-     * @return array
+     * @return array ['currentLoad' => int]
+     * @throws NotFoundHttpException
      */
-    abstract public function getMempoolFromApi(): array;
+    public function getCurrentLoad(): array
+    {
+        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
+    }
+
+    /**
+     * @return array [fee => weight(WU)]
+     * @throws NotFoundHttpException
+     */
+    public function getMempool(): array
+    {
+        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
+    }
+
+    /**
+     * @return array
+     * @throws NotFoundHttpException
+     */
+    public function getMempoolFromApi(): array
+    {
+        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
+    }
 
     /**
      * @return float
+     * @throws NotFoundHttpException
      */
-    abstract public function getCurrentMempoolWeight(): float;
+    public function getCurrentMempoolWeight(): float
+    {
+        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
+    }
 
     /**
      * @return array
+     * @throws NotFoundHttpException
      */
-    abstract public function getBlocksMinFee(): array;
+    public function getBlocksMinFee(): array
+    {
+        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
+    }
 }

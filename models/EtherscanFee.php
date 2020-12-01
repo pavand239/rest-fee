@@ -5,7 +5,6 @@ namespace restFee\models;
 
 use UnexpectedValueException;
 use yii\httpclient\Exception;
-use yii\web\NotFoundHttpException;
 
 class EtherscanFee extends FeeAbstract {
 
@@ -17,26 +16,6 @@ class EtherscanFee extends FeeAbstract {
     {
         parent::__construct();
         $this->apiKey = require __DIR__."/../keys/etherscanApiKey.php";
-    }
-
-    /**
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function getCurrentLoad(): array
-    {
-        // TODO: Implement getCurrentLoad() method.
-        throw new NotFoundHttpException('Method unavailable for this currency');
-    }
-
-    /**
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function getMempool(): array
-    {
-        // TODO: Implement getMempool() method.
-        throw new NotFoundHttpException('Method unavailable for this currency');
     }
 
     /**
@@ -58,33 +37,4 @@ class EtherscanFee extends FeeAbstract {
         return intval($response->data['result']['FastGasPrice']);
     }
 
-    /**
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function getMempoolFromApi(): array
-    {
-        // TODO: Implement getMempoolFromApi() method.
-        throw new NotFoundHttpException('Method unavailable for this currency');
-    }
-
-    /**
-     * @return float
-     * @throws NotFoundHttpException
-     */
-    public function getCurrentMempoolWeight(): float
-    {
-        // TODO: Implement getCurrentMempoolWeight() method.
-        throw new NotFoundHttpException('Method unavailable for this currency');
-    }
-
-    /**
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function getBlocksMinFee(): array
-    {
-        // TODO: Implement getBlocksMinFee() method.
-        throw new NotFoundHttpException('Method unavailable for this currency');
-    }
 }

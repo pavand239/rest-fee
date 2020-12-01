@@ -54,11 +54,11 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-                '' => 'fee/index',
+                '<currency:[a-zA-Z]{3}>' => 'fee/index',
                 'recommended/<currency:[a-zA-Z]{3}>' => 'fee/recommended',
-                'load' => 'fee/load',
-                'mempool-weight' => 'fee/mempool-weight',
-                'blocks-min-fee' => 'fee/blocks-min-fee',
+                'load/<currency:[a-zA-Z]{3}>' => 'fee/load',
+                'mempool-weight/<currency:[a-zA-Z]{3}>' => 'fee/mempool-weight',
+                'blocks-min-fee/<currency:[a-zA-Z]{3}>' => 'fee/blocks-min-fee',
             ],
         ]
     ],

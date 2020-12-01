@@ -36,7 +36,7 @@ class FeeController extends Controller
         $config = Yii::$app->get('config');
         $currency = strtoupper(Yii::$app->request->get('currency'));
         if (!in_array($currency, $this->allowedCurrency)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('Unknown currency code');
         }
         $className = $config->get($currency.'_API_MODEL_CLASSNAME');
         $this->feeService = new $className;
