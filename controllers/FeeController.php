@@ -5,12 +5,13 @@ namespace restFee\controllers;
 
 use restFee\components\Config;
 use restFee\models\BitcoinerLiveFee;
-use restFee\models\FeeInterface;
+use restFee\models\EtherscanFee;
+use restFee\models\FeeAbstract;
 use yii\base\InvalidConfigException;
-use yii\httpclient\Exception;
 use yii\rest\Controller;
 use Yii;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class FeeController
@@ -19,19 +20,25 @@ use yii\web\BadRequestHttpException;
 class FeeController extends Controller
 {
 
-    /** @var FeeInterface|BitcoinerLiveFee */
+    /** @var FeeAbstract|BitcoinerLiveFee|EtherscanFee */
     public $feeService;
+    private $allowedCurrency = ['BTC', 'ETH'];
 
     /**
      * @param $action
      * @return bool
      * @throws InvalidConfigException
      * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
      */
     public function beforeAction($action) {
         /** @var Config $config */
         $config = Yii::$app->get('config');
-        $className = $config->get('API_MODEL_CLASSNAME');
+        $currency = strtoupper(Yii::$app->request->get('currency'));
+        if (!in_array($currency, $this->allowedCurrency)) {
+            throw new NotFoundHttpException();
+        }
+        $className = $config->get($currency.'_API_MODEL_CLASSNAME');
         $this->feeService = new $className;
         return parent::beforeAction($action);
     }
@@ -43,14 +50,15 @@ class FeeController extends Controller
      * рекомендованная комиссия
      * ]
      * @return array
-     * @throws Exception
+     * @throws NotFoundHttpException
      */
     public function actionIndex()
     {
         return [
             'blocksMinFee' => $this->feeService->getBlocksMinFee(),
             'mempoolWeight' => $this->feeService->getCurrentMempoolWeight(),
-        ] + $this->feeService->getRecommendedFee();
+        ]
+            + $this->feeService->getRecommendedFee();
     }
 
     /**
@@ -65,7 +73,7 @@ class FeeController extends Controller
     /**
      * возвращает текущий вес мемпула
      * @return float
-     * @throws Exception
+     * @throws NotFoundHttpException
      */
     public function actionMempoolWeight()
     {
@@ -75,6 +83,7 @@ class FeeController extends Controller
     /**
      * возвращает текущую нагрузку сети в процентах
      * @return array
+     * @throws NotFoundHttpException
      */
     public function actionLoad()
     {
@@ -84,7 +93,7 @@ class FeeController extends Controller
     /**
      * возвращает массив типа [номер блока => мин комиссия для попадания]
      * @return array
-     * @throws Exception
+     * @throws NotFoundHttpException
      */
     public function actionBlocksMinFee()
     {
