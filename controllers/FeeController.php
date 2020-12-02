@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace restFee\controllers;
 
 use restFee\components\Config;
+use restFee\models\BchBlockchair;
 use restFee\models\BitcoinerLiveFee;
 use restFee\models\EtherscanFee;
 use restFee\models\FeeAbstract;
@@ -20,9 +21,9 @@ use yii\web\NotFoundHttpException;
 class FeeController extends Controller
 {
 
-    /** @var FeeAbstract|BitcoinerLiveFee|EtherscanFee */
+    /** @var FeeAbstract|BitcoinerLiveFee|EtherscanFee|BchBlockchair */
     public $feeService;
-    private $allowedCurrency = ['BTC', 'ETH'];
+    private $allowedCurrency = ['BTC', 'ETH', 'BCH'];
 
     /**
      * @param $action
@@ -56,7 +57,7 @@ class FeeController extends Controller
     {
         return [
             'blocksMinFee' => $this->feeService->getBlocksMinFee(),
-            'mempoolWeight' => $this->feeService->getCurrentMempoolWeight(),
+            'mempoolWeight' => $this->feeService->getMempoolWeight(),
         ]
             + $this->feeService->getRecommendedFee();
     }
@@ -77,7 +78,7 @@ class FeeController extends Controller
      */
     public function actionMempoolWeight()
     {
-        return $this->feeService->getCurrentMempoolWeight();
+        return $this->feeService->getMempoolWeight();
     }
 
     /**

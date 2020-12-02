@@ -7,6 +7,7 @@ use restFee\models\FeeAbstract;
 use Yii;
 use Codeception\Test\Unit;
 use yii\base\InvalidConfigException;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class AbstractFeeTest
@@ -30,6 +31,7 @@ abstract class AbstractFeeTest extends Unit
         $this->feeService = new $className;
     }
 
+
     public function testGetRecommendedFee()
     {
         $recommendedFee = $this->feeService->getRecommendedFee();
@@ -37,12 +39,19 @@ abstract class AbstractFeeTest extends Unit
         echo print_r($recommendedFee);
         codecept_debug($recommendedFee);
     }
+
+    /**
+     * @throws NotFoundHttpException
+     */
     public function testGetCurrentLoad()
     {
         $currentLoad = $this->feeService->getCurrentLoad();
         $this->assertIsNumeric($currentLoad['currentLoad']);
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     public function testGetMempool()
     {
         $mempool = $this->feeService->getMempool();
@@ -57,18 +66,27 @@ abstract class AbstractFeeTest extends Unit
         codecept_debug($recommendedFee);
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     public function testGetMempoolFromApi()
     {
         $mempool = $this->feeService->getMempoolFromApi();
         $this->assertIsArray($mempool);
     }
 
-    public function testGetCurrentMempoolWeight()
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function testGetMempoolWeight()
     {
-        $weight = $this->feeService->getCurrentMempoolWeight();
+        $weight = $this->feeService->getMempoolWeight();
         $this->assertIsNumeric($weight);
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     public function testGetBlocksMinFee()
     {
         $blocks = $this->feeService->getBlocksMinFee();

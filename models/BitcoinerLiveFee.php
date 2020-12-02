@@ -19,14 +19,11 @@ class BitcoinerLiveFee extends FeeAbstract
      */
     public function getCurrentLoad(): array
     {
-        $load = Yii::$app->cache->getOrSet('currentLoad', function () {
-            $weight = $this->getCurrentMempoolWeight();
-            $load = round($weight);
-            if ($load>100) {
-                return 100;
-            }
-            return $load;
-        }, 60);
+        $weight = $this->getMempoolWeight();
+        $load = ceil($weight);
+        if ($load>100) {
+            $load = 100;
+        }
         return ['currentLoad'=>$load];
     }
 
@@ -86,7 +83,7 @@ class BitcoinerLiveFee extends FeeAbstract
      * возвращает текущий вес мемпула
      * @return float
      */
-    public function getCurrentMempoolWeight(): float
+    public function getMempoolWeight(): float
     {
         $mempool = $this->getMempool();
         return array_sum($mempool)/(4*1048576);
@@ -106,7 +103,7 @@ class BitcoinerLiveFee extends FeeAbstract
         $blockNum = 1;
         // для первого блока может быть уменьшен макс размер блока
         // поэтому храним размер блока в отдельной переменной
-        $blockMaxWeight = 4*1048576;
+        $blockMaxWeight = 4*self::BYTES_PER_MEGABYTE;
         foreach ($mempool as $fee => $weight) {
             $fee = intval($fee);
             if (($currentWeight + $weight)  < $blockMaxWeight) {
