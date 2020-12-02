@@ -10,8 +10,8 @@ use yii\httpclient\Exception;
 
 class BitcoinerLiveFee extends FeeAbstract
 {
-    protected $baseUrl = 'https://bitcoiner.live/api';
-    protected $currency = 'BTC';
+    protected string $baseUrl = 'https://bitcoiner.live/api';
+    protected string $currency = 'BTC';
 
     /**
      * возвращает нагрузку сети с кэшированием
@@ -20,7 +20,7 @@ class BitcoinerLiveFee extends FeeAbstract
     public function getCurrentLoad(): array
     {
         $weight = $this->getMempoolWeight();
-        $load = ceil($weight);
+        $load = intval(ceil($weight));
         if ($load>100) {
             $load = 100;
         }

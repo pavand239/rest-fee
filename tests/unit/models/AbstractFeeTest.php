@@ -35,7 +35,7 @@ abstract class AbstractFeeTest extends Unit
     public function testGetRecommendedFee()
     {
         $recommendedFee = $this->feeService->getRecommendedFee();
-        $this->assertIsNumeric($recommendedFee['recommendedFee']);
+        $this->assertIsString($recommendedFee['recommendedFee']);
         echo print_r($recommendedFee);
         codecept_debug($recommendedFee);
     }
@@ -46,50 +46,16 @@ abstract class AbstractFeeTest extends Unit
     public function testGetCurrentLoad()
     {
         $currentLoad = $this->feeService->getCurrentLoad();
-        $this->assertIsNumeric($currentLoad['currentLoad']);
-    }
-
-    /**
-     * @throws NotFoundHttpException
-     */
-    public function testGetMempool()
-    {
-        $mempool = $this->feeService->getMempool();
-        $this->assertIsArray($mempool);
+        $this->assertIsInt($currentLoad['currentLoad']);
     }
 
     public function testGetRecommendedFeeFromApi()
     {
         $recommendedFee = $this->feeService->getRecommendedFeeFromApi();
-        $this->assertIsNumeric($recommendedFee);
+        $this->assertIsString($recommendedFee);
         echo print_r($recommendedFee);
         codecept_debug($recommendedFee);
     }
 
-    /**
-     * @throws NotFoundHttpException
-     */
-    public function testGetMempoolFromApi()
-    {
-        $mempool = $this->feeService->getMempoolFromApi();
-        $this->assertIsArray($mempool);
-    }
 
-    /**
-     * @throws NotFoundHttpException
-     */
-    public function testGetMempoolWeight()
-    {
-        $weight = $this->feeService->getMempoolWeight();
-        $this->assertIsNumeric($weight);
-    }
-
-    /**
-     * @throws NotFoundHttpException
-     */
-    public function testGetBlocksMinFee()
-    {
-        $blocks = $this->feeService->getBlocksMinFee();
-        $this->assertIsArray($blocks);
-    }
 }

@@ -9,8 +9,8 @@ use yii\httpclient\Exception;
 
 class BchBlockchair extends FeeAbstract
 {
-    protected $baseUrl = 'https://api.blockchair.com/bitcoin-cash/stats';
-    protected $currency = 'BCH';
+    protected string $baseUrl = 'https://api.blockchair.com/bitcoin-cash/stats';
+    protected string $currency = 'BCH';
 
     /**
      * получить всю статистику из api
@@ -51,7 +51,7 @@ class BchBlockchair extends FeeAbstract
     public function getCurrentLoad(): array
     {
         $weight = $this->getMempoolWeight();
-        $load = ceil($weight);
+        $load = intval(ceil($weight));
         if ($load>100) {
             $load = 100;
         }

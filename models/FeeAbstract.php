@@ -12,13 +12,13 @@ abstract class FeeAbstract
     /** @var string сообщение об ошибке при недоступности метода для выбранной валюты */
     protected const UNAVAILABLE_METHOD_MESSAGE = 'Method unavailable for this currency';
     /** @var string базовый url api */
-    protected $baseUrl;
+    protected string $baseUrl;
     /** @var string код валюты */
-    protected $currency;
+    protected string $currency;
 
     public const BYTES_PER_MEGABYTE = 1048576;
     /** @var Client  */
-    public $client;
+    public Client $client;
 
     public function __construct()
     {
@@ -35,7 +35,7 @@ abstract class FeeAbstract
     }
     /**
      * возвращает размер рекомендованной комиссии с кэшированием
-     * @return array ['recommendedFee' => int]
+     * @return string[] ['recommendedFee' => string]
      */
     public function getRecommendedFee(): array
     {
@@ -44,8 +44,9 @@ abstract class FeeAbstract
         }, 60);
         return ['recommendedFee'=>$fee];
     }
+
     /**
-     * @return integer
+     * @return string
      */
     abstract public function getRecommendedFeeFromApi(): string;
 

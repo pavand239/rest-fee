@@ -11,12 +11,17 @@ use yii\httpclient\Exception;
 /**
  * Class EthBlockchair
  * @package restFee\models
- * все данные рассчитываются на основе данных о 100 последних блоках из api
+ * Все данные рассчитываются на основе данных о 100 последних блоках из api.
+ * Расчет рекомендуемой комиссии:
+ * ср. сумма комиссии в блоке/ср. количество использованного газа получаем ср. цену газа
+ * далее ср. цена газа умножается на 21000 - стд. лимит газа (Рома сказал захардкодить его)
+ * далее переводим получившееся число из wei в ETH
+ * Нагрузку сети рассчитываем по формуле ср. кол-во использованного газа/ср. лимит газа блока
  */
 class EthBlockchair extends FeeAbstract {
 
-    protected $baseUrl = "https://api.blockchair.com/ethereum/blocks";
-    protected $currency = 'ETH';
+    protected string $baseUrl = "https://api.blockchair.com/ethereum/blocks";
+    protected string $currency = 'ETH';
 
     /**
      * данные последних 100 блоков
@@ -57,7 +62,7 @@ class EthBlockchair extends FeeAbstract {
     }
 
     /**
-     * ср. сумма комиссии в блоке/ср. количество использованного газа - средняя цена газа
+     * ср. сумма комиссии в блоке/ср. количество использованного газа получаем ср. цену газа
      * далее ср. цена газа умножается на 21000 - стд. лимит газа (Рома сказал захардкодить его)
      * дадее переводим получившееся число из wei в ETH
      * @return string
@@ -73,14 +78,14 @@ class EthBlockchair extends FeeAbstract {
     /**
      * рассчитываем по формуле ср. кол-во использованного газа/ср. лимит газа блока
      * далее переводим в проценты
-     * @return float[]
+     * @return int[]
      */
     public function getCurrentLoad(): array
     {
         $blocksInfo = $this->getBlocksInfo();
         $avgGasUsed = $blocksInfo['avgGasUsed'];
         $avgGasLimit = $blocksInfo['avgGasLimit'];
-        $load = ceil(($avgGasUsed/$avgGasLimit)*100);
+        $load = intval(ceil(($avgGasUsed/$avgGasLimit)*100));
         return ['currentLoad' => $load];
     }
 }
