@@ -47,7 +47,7 @@ abstract class FeeAbstract
     /**
      * @return integer
      */
-    abstract public function getRecommendedFeeFromApi(): int;
+    abstract public function getRecommendedFeeFromApi(): string;
 
     /**
      * @return array ['currentLoad' => int]

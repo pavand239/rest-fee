@@ -55,11 +55,8 @@ class FeeController extends Controller
      */
     public function actionIndex()
     {
-        return [
-            'blocksMinFee' => $this->feeService->getBlocksMinFee(),
-            'mempoolWeight' => $this->feeService->getMempoolWeight(),
-        ]
-            + $this->feeService->getRecommendedFee();
+        return $this->feeService->getRecommendedFee()
+            + $this->feeService->getCurrentLoad();
     }
 
     /**

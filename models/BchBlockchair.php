@@ -73,9 +73,9 @@ class BchBlockchair extends FeeAbstract
      * @return int
      * @throws Exception
      */
-    public function getRecommendedFeeFromApi(): int
+    public function getRecommendedFeeFromApi(): string
     {
-        return $this->getStat()['suggested_transaction_fee_per_byte_sat'];
+        return (string)$this->getStat()['suggested_transaction_fee_per_byte_sat'];
     }
 
 }

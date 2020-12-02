@@ -49,7 +49,7 @@ class BitcoinerLiveFee extends FeeAbstract
      * @throws Exception
      * @throws UnexpectedValueException
      */
-    public function getRecommendedFeeFromApi(): int
+    public function getRecommendedFeeFromApi(): string
     {
         $response = $this->client->get('fees/estimates/latest', ['confidence' => 0.9])->send();
         if (!$response->isOk) {
@@ -58,7 +58,7 @@ class BitcoinerLiveFee extends FeeAbstract
         if (!isset($response->data['estimates']['30']['sat_per_vbyte'])) {
             throw new UnexpectedValueException('Response is not ok');
         }
-        return $response->data['estimates']['30']['sat_per_vbyte'];
+        return (string)$response->data['estimates']['30']['sat_per_vbyte'];
     }
 
     /**
