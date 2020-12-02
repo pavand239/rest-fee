@@ -6,11 +6,16 @@ namespace restFee\models;
 use UnexpectedValueException;
 use yii\httpclient\Exception;
 
+/**
+ * Class EtherscanFee
+ * @package restFee\models
+ * @deprecated
+ */
 class EtherscanFee extends FeeAbstract {
 
-    protected $baseUrl = "https://api.etherscan.io/api";
+    protected string $baseUrl = "https://api.etherscan.io/api";
     protected $apiKey;
-    protected $currency = 'ETH';
+    protected string $currency = 'ETH';
 
     public function __construct()
     {
@@ -22,7 +27,7 @@ class EtherscanFee extends FeeAbstract {
      * @return int
      * @throws Exception
      */
-    public function getRecommendedFeeFromApi(): int
+    public function getRecommendedFeeFromApi(): string
     {
         $module = 'gastracker';
         $action = 'gasoracle';
@@ -34,7 +39,7 @@ class EtherscanFee extends FeeAbstract {
         if (!isset($response->data['result']['FastGasPrice'])) {
             throw new UnexpectedValueException('Response is not ok');
         }
-        return intval($response->data['result']['FastGasPrice']);
+        return $response->data['result']['FastGasPrice'];
     }
 
 }
