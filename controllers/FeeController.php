@@ -6,7 +6,8 @@ namespace restFee\controllers;
 use restFee\components\Config;
 use restFee\models\BchBlockchair;
 use restFee\models\BitcoinerLiveFee;
-use restFee\models\EtherscanFee;
+use restFee\models\BitcoinNodeFee;
+use restFee\models\EthBlockchair;
 use restFee\models\FeeAbstract;
 use yii\base\InvalidConfigException;
 use yii\rest\Controller;
@@ -21,9 +22,9 @@ use yii\web\NotFoundHttpException;
 class FeeController extends Controller
 {
 
-    /** @var FeeAbstract|BitcoinerLiveFee|EtherscanFee|BchBlockchair */
+    /** @var FeeAbstract|BitcoinerLiveFee|EthBlockchair|BchBlockchair|BitcoinNodeFee */
     public $feeService;
-    private $allowedCurrency = ['BTC', 'ETH', 'BCH'];
+    private array $allowedCurrency = ['BTC', 'ETH', 'BCH'];
 
     /**
      * @param $action
@@ -32,7 +33,8 @@ class FeeController extends Controller
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
      */
-    public function beforeAction($action) {
+    public function beforeAction($action): bool
+    {
         /** @var Config $config */
         $config = Yii::$app->get('config');
         $currency = strtoupper(Yii::$app->request->get('currency'));
@@ -53,7 +55,7 @@ class FeeController extends Controller
      * @return array
      * @throws NotFoundHttpException
      */
-    public function actionIndex()
+    public function actionIndex(): array
     {
         return $this->feeService->getRecommendedFee()
             + $this->feeService->getCurrentLoad();
@@ -63,19 +65,19 @@ class FeeController extends Controller
      * возвращает размер рекомендованной комиссии
      * @return array
      */
-    public function actionRecommended()
+    public function actionRecommended(): array
     {
         return $this->feeService->getRecommendedFee();
     }
 
     /**
      * возвращает текущий вес мемпула
-     * @return float
+     * @return array
      * @throws NotFoundHttpException
      */
-    public function actionMempoolWeight()
+    public function actionMempoolWeight(): array
     {
-        return $this->feeService->getMempoolWeight();
+        return ['mempoolWeight' => $this->feeService->getMempoolWeight()];
     }
 
     /**
@@ -83,9 +85,9 @@ class FeeController extends Controller
      * @return array
      * @throws NotFoundHttpException
      */
-    public function actionLoad()
+    public function actionLoad(): array
     {
-        return $this->feeService->getCurrentLoad();
+        return ['currentLoad' => $this->feeService->getCurrentLoad()];
     }
 
     /**
@@ -93,7 +95,7 @@ class FeeController extends Controller
      * @return array
      * @throws NotFoundHttpException
      */
-    public function actionBlocksMinFee()
+    public function actionBlocksMinFee(): array
     {
         return $this->feeService->getBlocksMinFee();
     }

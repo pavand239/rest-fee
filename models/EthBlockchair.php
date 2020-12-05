@@ -20,8 +20,12 @@ use yii\httpclient\Exception;
  */
 class EthBlockchair extends FeeAbstract {
 
-    protected string $baseUrl = "https://api.blockchair.com/ethereum/blocks";
-    protected string $currency = 'ETH';
+    public function __construct()
+    {
+        $this->baseUrl = "https://api.blockchair.com/ethereum/blocks";
+        $this->currency = 'ETH';
+        parent::__construct();
+    }
 
     /**
      * данные последних 100 блоков

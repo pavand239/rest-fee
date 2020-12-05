@@ -10,8 +10,12 @@ use yii\httpclient\Exception;
 
 class BitcoinerLiveFee extends FeeAbstract
 {
-    protected string $baseUrl = 'https://bitcoiner.live/api';
-    protected string $currency = 'BTC';
+    public function __construct()
+    {
+        $this->baseUrl = 'https://bitcoiner.live/api';
+        $this->currency = 'BTC';
+        parent::__construct();
+    }
 
     /**
      * возвращает нагрузку сети с кэшированием
@@ -34,7 +38,7 @@ class BitcoinerLiveFee extends FeeAbstract
     public function getMempool(): array
     {
         return Yii::$app->cache->getOrSet(
-            'mempool',
+            $this->getCacheName('mempool'),
             function ()
             {
                 return $this->getMempoolFromApi();
@@ -45,7 +49,7 @@ class BitcoinerLiveFee extends FeeAbstract
 
     /**
      * возвращает размер рекомендованной комисии из api
-     * @return int
+     * @return string
      * @throws Exception
      * @throws UnexpectedValueException
      */

@@ -35,9 +35,7 @@ abstract class AbstractFeeTest extends Unit
     public function testGetRecommendedFee()
     {
         $recommendedFee = $this->feeService->getRecommendedFee();
-        $this->assertIsString($recommendedFee['recommendedFee']);
-        echo print_r($recommendedFee);
-        codecept_debug($recommendedFee);
+        $this->assertTrue(floatval($recommendedFee['recommendedFee'])>0);
     }
 
     /**
@@ -52,9 +50,7 @@ abstract class AbstractFeeTest extends Unit
     public function testGetRecommendedFeeFromApi()
     {
         $recommendedFee = $this->feeService->getRecommendedFeeFromApi();
-        $this->assertIsString($recommendedFee);
-        echo print_r($recommendedFee);
-        codecept_debug($recommendedFee);
+        $this->assertTrue(floatval($recommendedFee)>0);
     }
 
 

@@ -5,7 +5,8 @@
     "yiisoft/yii2-httpclient": "*",
     "codeception/codeception": "^4.1",
     "codeception/specify": "*",
-    "codeception/verify": "*"
+    "codeception/verify": "*",
+    "ext-json": "*"
   },
   "require-dev": {
     "codeception/module-yii2": "^1.0.0",
