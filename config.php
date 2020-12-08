@@ -41,8 +41,8 @@ $config = [
         ],
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=restFee',
-            'username' => 'pavand239',
+            'dsn' => 'mysql:host=db;dbname=restFee',
+            'username' => 'restFee',
             'password' => 'P@ssw0rd',
             'charset' => 'utf8',
         ],

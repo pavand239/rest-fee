@@ -1,0 +1,46 @@
+version: "3"
+networks:
+  app-network:
+    driver: bridge
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: php:7.4-fpm
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    networks:
+      - app-network
+    volumes:
+      - ./:/var/www
+  nginx:
+    image: nginx:latest
+    tty: true
+    ports:
+      - 85:80
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/logs:/var/log/nginx/
+    networks:
+      - app-network
+    depends_on:
+      - app
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: restFee
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_PASSWORD: P@ssw0rd
+    ports:
+      - 3306:3306
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+volumes:
+  db_data:
+    driver: local
