@@ -55,7 +55,7 @@ class BchBlockchair extends FeeAbstract
     public function getCurrentLoad(): array
     {
         $weight = $this->getMempoolWeight();
-        $load = intval(ceil($weight));
+        $load = intval(ceil($weight/50));
         if ($load>100) {
             $load = 100;
         }

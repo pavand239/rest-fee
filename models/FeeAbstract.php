@@ -39,9 +39,12 @@ abstract class FeeAbstract
      */
     public function getRecommendedFee(): array
     {
-        $fee = Yii::$app->cache->getOrSet($this->currency.'_recommendedFee', function () {
-            return $this->getRecommendedFeeFromApi();
-        }, 60);
+        $fee = Yii::$app->cache->getOrSet(
+            $this->getCacheName('recommended-fee'),
+            function () {
+                return $this->getRecommendedFeeFromApi();
+            },
+            60);
         return ['recommendedFee'=>$fee];
     }
 

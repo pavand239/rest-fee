@@ -18,31 +18,16 @@ class BitcoinNodeFee extends FeeAbstract
     }
 
     /**
-     * @return float
-     */
-    public function getMempoolWeight(): float
-    {
-        return Yii::$app->cache->getOrSet(
-            $this->getCacheName('mempool-weight'),
-            function ()
-            {
-                return $this->getMempoolWeightFromApi();
-            },
-            60
-        );
-    }
-
-    /**
      * @return int[]
      */
     public function getCurrentLoad(): array
     {
-        $weight = $this->getMempoolWeight();
-        $load = intval(ceil($weight));
-        if ($load>100) {
-            $load = 100;
-        }
-        return ['currentLoad'=>$load];
+        $load = Yii::$app->cache->getOrSet(
+          $this->getCacheName('load'),
+          fn() => $this->getCurrentLoadFromApi(),
+          60
+        );
+        return ['currentLoad' => $load];
     }
 
     /**
@@ -66,14 +51,14 @@ class BitcoinNodeFee extends FeeAbstract
             throw new UnexpectedValueException('Response is not ok');
         }
         $feeBtcPerKB = $response->data['result']['feerate'];
-        return (string)intval(($feeBtcPerKB*(10**8))/1024);
+        return (string)intval(($feeBtcPerKB*(10**8))/1000);
     }
 
     /**
-     * @return float
+     * @return int
      * @throws Exception
      */
-    public function getMempoolWeightFromApi(): float
+    public function getCurrentLoadFromApi(): int
     {
         $requestData = json_encode(
             [
@@ -83,13 +68,16 @@ class BitcoinNodeFee extends FeeAbstract
             ]
         );
         $response = $this->client->post('',$requestData, ['content-type' => 'application/json'])->setFormat(Client::FORMAT_JSON)->send();
+
         if (!$response->isOk) {
             throw new UnexpectedValueException('Response is not ok');
         }
         if (!isset($response->data['result'])) {
             throw new UnexpectedValueException('Response is not ok');
         }
-        return (float)$response->data['result']['usage']/self::BYTES_PER_MEGABYTE;
 
+        $usage = (float)$response->data['result']['usage'];
+        $maxmempool = (float)$response->data['result']['maxmempool'];
+        return intval(ceil($usage/$maxmempool*100));
     }
 }
