@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace restFee\models;
 
+use UnexpectedValueException;
+use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 use Yii;
+use yii\httpclient\Exception;
 use yii\web\NotFoundHttpException;
 
 abstract class FeeAbstract
@@ -31,7 +35,7 @@ abstract class FeeAbstract
      */
     public function getCacheName(string $name): string
     {
-        return $this->currency.$name;
+        return $this->currency.'_'.$name;
     }
     /**
      * возвращает размер рекомендованной комиссии с кэшированием
@@ -96,5 +100,72 @@ abstract class FeeAbstract
     public function getBlocksMinFee(): array
     {
         throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
+    }
+
+    /**
+     * @param string $requestData json-rpc params
+     * @param string $key key for ArrayHelper::getValue
+     * @return mixed
+     * @throws Exception
+     * @throws \Exception
+     */
+    protected function sendRequestJsonRPC(string $requestData, string $key)
+    {
+        $response =  $this->client->post('',$requestData, ['content-type' => 'application/json'])->setFormat(Client::FORMAT_JSON)->send();
+        if (!$response->isOk) {
+            throw new UnexpectedValueException('Response is not ok');
+        }
+        if (!ArrayHelper::getValue($response->data, $key)) {
+            throw new UnexpectedValueException('Response is not ok');
+        }
+        return ArrayHelper::getValue($response->data, $key);
+    }
+
+    /**
+     * @param string $method
+     * @param string $url
+     * @param string $key key for ArrayHelper::getValue
+     * @param array $data
+     * @return mixed
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws \Exception
+     */
+    protected function sendRequestSimple(string $method, string $url, string $key, array $data = [])
+    {
+        $response = $this->client->createRequest()
+            ->setMethod($method)
+            ->setUrl($url)
+            ->setData($data)
+            ->setFormat(Client::FORMAT_JSON)
+            ->setHeaders(['Content-Type' => 'application/json'])
+            ->send();
+
+        if (!$response->isOk) {
+            throw new UnexpectedValueException('Response is not ok');
+        }
+        if (!ArrayHelper::getValue($response->data, $key)) {
+            throw new UnexpectedValueException('Response is not ok');
+        }
+        return ArrayHelper::getValue($response->data, $key);
+    }
+
+
+    /**
+     * подготовить json для json-rpc запроса
+     * @param string $method
+     * @param array $params
+     * @return string
+     */
+    protected function prepareRequestData(string $method, array $params = []): string
+    {
+        return json_encode(
+            [
+                "jsonrpc" => "2.0",
+                "method" => $method,
+                "params" => $params,
+                "id" => 1
+            ]
+        );
     }
 }

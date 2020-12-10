@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace restFee\models;
 
-use UnexpectedValueException;
+
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\httpclient\Exception;
 
@@ -47,21 +48,15 @@ class EthBlockchair extends FeeAbstract {
      * считаем средние значения totalFee, gasUsed, gasLimit
      * остальные данные отбрасываем
      * @return array
-     * @throws Exception
+     * @throws Exception|InvalidConfigException
      */
     public function getBlocksInfoFromApi(): array
     {
-        $response = $this->client->get('', ['limit'=>100])->send();
-        if (!$response->isOk) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        if (!isset($response->data['data'])) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
+        $data = $this->sendRequestSimple('GET','','data', ['limit'=>100]);
         return [
-            'avgGasUsed' => array_sum(ArrayHelper::getColumn($response->data['data'], 'gas_used'))/100,
-            'avgGasLimit' => array_sum(ArrayHelper::getColumn($response->data['data'], 'gas_limit'))/100,
-            'avgTotalFee' => array_sum(ArrayHelper::getColumn($response->data['data'], 'fee_total'))/100,
+            'avgGasUsed' => array_sum(ArrayHelper::getColumn($data, 'gas_used'))/100,
+            'avgGasLimit' => array_sum(ArrayHelper::getColumn($data, 'gas_limit'))/100,
+            'avgTotalFee' => array_sum(ArrayHelper::getColumn($data, 'fee_total'))/100,
         ];
     }
 

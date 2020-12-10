@@ -6,6 +6,7 @@ namespace restFee\models;
 use UnexpectedValueException;
 use Yii;
 
+use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 
 class BitcoinerLiveFee extends FeeAbstract
@@ -48,12 +49,21 @@ class BitcoinerLiveFee extends FeeAbstract
     }
 
     /**
+     * @return string
+     */
+    public function getRecommendedFeeFromApi(): string
+    {
+        return (string)$this->getBlocksMinFee()[1];
+    }
+
+    /**
      * возвращает размер рекомендованной комисии из api
      * @return string
      * @throws Exception
      * @throws UnexpectedValueException
+     * @deprecated
      */
-    public function getRecommendedFeeFromApi(): string
+    public function getRecommendedFeeFromApi_deprecated(): string
     {
         $response = $this->client->get('fees/estimates/latest', ['confidence' => 0.9])->send();
         if (!$response->isOk) {
@@ -69,17 +79,11 @@ class BitcoinerLiveFee extends FeeAbstract
      * получает текущий мемпул из api
      * @return array [fee => weight(WU)]
      * @throws Exception
+     * @throws InvalidConfigException
      */
     public function getMempoolFromApi(): array
     {
-        $response = $this->client->get('mempool/latest')->send();
-        if (!$response->isOk) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        if (!isset($response->data['mempool'])) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        return $response->data['mempool'];
+        return $this->sendRequestSimple('GET','mempool/latest', 'mempool');
     }
 
 

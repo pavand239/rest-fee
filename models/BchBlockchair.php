@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace restFee\models;
 
-use UnexpectedValueException;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 
 class BchBlockchair extends FeeAbstract
@@ -19,17 +19,10 @@ class BchBlockchair extends FeeAbstract
     /**
      * получить всю статистику из api
      * @return array
-     * @throws Exception
+     * @throws Exception|InvalidConfigException
      */
     public function getStat(): array {
-        $response = $this->client->get('')->send();
-        if (!$response->isOk) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        if (!isset($response->data['data'])) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        return $response->data['data'];
+        return $this->sendRequestSimple('GET','','data');
     }
 
     /**
@@ -65,7 +58,7 @@ class BchBlockchair extends FeeAbstract
     /**
      * вес мемпула из api (без кэширования)
      * @return float
-     * @throws Exception
+     * @throws Exception|InvalidConfigException
      */
     public function getMempoolWeightFromApi(): float
     {
@@ -75,7 +68,7 @@ class BchBlockchair extends FeeAbstract
     /**
      * рекомендуемая комиссия satoshi/byte (без кэширование)
      * @return string
-     * @throws Exception
+     * @throws Exception|InvalidConfigException
      */
     public function getRecommendedFeeFromApi(): string
     {

@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace restFee\models;
 
-use UnexpectedValueException;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\httpclient\Client;
 use yii\httpclient\Exception;
 
 
@@ -26,7 +24,7 @@ class EthNodeFee extends FeeAbstract
     public function getRecommendedFeeFromApi(): string
     {
         $requestData = $this->prepareRequestData('eth_gasPrice');
-        $gasPrice = $this->sendRequest($requestData,'result');
+        $gasPrice = $this->sendRequestJsonRPC($requestData,'result');
         return (string)round(hexdec($gasPrice)*21000/pow(10,18), 8);
     }
 
@@ -38,7 +36,7 @@ class EthNodeFee extends FeeAbstract
         $load = Yii::$app->cache->getOrSet(
             $this->getCacheName('load'),
             fn() => $this->getCurrentLoadFromApi(),
-            60
+            10
         );
         return ['currentLoad' => $load];
     }
@@ -49,7 +47,7 @@ class EthNodeFee extends FeeAbstract
      */
     public function getCurrentLoadFromApi(): int
     {
-        $blocks = $this->getLastBlocks(100);
+        $blocks = $this->getLastBlocks(50);
         ['avgGasLimit' => $avgGasLimit, 'avgGasUsed' => $avgGasUsed] = $this->getAvgGasInfoFromBlocks($blocks);
         return intval(ceil(($avgGasUsed/$avgGasLimit)*100));
     }
@@ -101,7 +99,7 @@ class EthNodeFee extends FeeAbstract
                 false
             ]
         );
-        return $this->sendRequest($requestData, 'result');
+        return $this->sendRequestJsonRPC($requestData, 'result');
     }
 
 
@@ -113,43 +111,7 @@ class EthNodeFee extends FeeAbstract
     protected function getMostRecentBlockNumber(): int
     {
         $requestData = $this->prepareRequestData('eth_blockNumber');
-        return hexdec($this->sendRequest($requestData, 'result'));
+        return hexdec($this->sendRequestJsonRPC($requestData, 'result'));
     }
 
-    /**
-     * @param string $requestData json-rpc params
-     * @param string $key key for ArrayHelper::getValue
-     * @return mixed
-     * @throws Exception
-     * @throws \Exception
-     */
-    protected function sendRequest(string $requestData, string $key)
-    {
-        $response =  $this->client->post('',$requestData, ['content-type' => 'application/json'])->setFormat(Client::FORMAT_JSON)->send();
-        if (!$response->isOk) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        if (!ArrayHelper::getValue($response->data, $key)) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        return ArrayHelper::getValue($response->data, $key);
-    }
-
-    /**
-     * подготовить json для json-rpc запроса
-     * @param string $method
-     * @param array $params
-     * @return string
-     */
-    protected function prepareRequestData(string $method, array $params = []): string
-    {
-        return json_encode(
-            [
-                "jsonrpc" => "2.0",
-                "method" => $method,
-                "params" => $params,
-                "id" => 1
-            ]
-        );
-    }
 }

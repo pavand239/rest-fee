@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace restFee\models;
 
-use UnexpectedValueException;
-use yii\httpclient\Client;
 use Yii;
 use yii\httpclient\Exception;
 
@@ -36,21 +34,18 @@ class BitcoinNodeFee extends FeeAbstract
      */
     public function getRecommendedFeeFromApi(): string
     {
-        $requestData = json_encode(
-            [
-                "jsonrpc" => "2.0",
-                "method" => "estimatesmartfee",
-                "params" => [1]
-            ]
-        );
-        $response = $this->client->post('',$requestData, ['content-type' => 'application/json'])->setFormat(Client::FORMAT_JSON)->send();
-        if (!$response->isOk) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        if (!isset($response->data['result']['feerate'])) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        $feeBtcPerKB = $response->data['result']['feerate'];
+        return (string)$this->getBlocksMinFee()[1];
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     * @deprecated
+     */
+    public function getRecommendedFeeFromApi_deprecated(): string
+    {
+        $requestData = $this->prepareRequestData('estimatesmartfee',[1]);
+        $feeBtcPerKB = $this->sendRequestJsonRPC($requestData, 'result.feerate');
         return (string)intval(($feeBtcPerKB*(10**8))/1000);
     }
 
@@ -60,24 +55,77 @@ class BitcoinNodeFee extends FeeAbstract
      */
     public function getCurrentLoadFromApi(): int
     {
-        $requestData = json_encode(
-            [
-                "jsonrpc" => "2.0",
-                "method" => "getmempoolinfo",
-                "params" => []
-            ]
-        );
-        $response = $this->client->post('',$requestData, ['content-type' => 'application/json'])->setFormat(Client::FORMAT_JSON)->send();
-
-        if (!$response->isOk) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        if (!isset($response->data['result'])) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-
-        $usage = (float)$response->data['result']['usage'];
-        $maxmempool = (float)$response->data['result']['maxmempool'];
+        $requestData = $this->prepareRequestData('getmempoolinfo');
+        $result = $this->sendRequestJsonRPC($requestData, 'result');
+        $usage = (float)$result['usage'];
+        $maxmempool = (float)$result['maxmempool'];
         return intval(ceil($usage/$maxmempool*100));
+    }
+
+    /**
+     * возвращает массив вида [номер блока => мин комиссия для попадания]
+     * @return array
+     * @throws Exception
+     */
+    public function getBlocksMinFee(): array
+    {
+        $mempool = $this->getMempoolWeightDistribution();
+        $blocksMinFee = [];
+        $currentWeight = 0;
+        $blockNum = 1;
+        // для первого блока может быть уменьшен макс размер блока
+        // поэтому храним размер блока в отдельной переменной
+        $blockMaxWeight = 0.8*self::BYTES_PER_MEGABYTE;
+        foreach ($mempool as $fee => $weight) {
+            $fee = intval($fee);
+            if (($currentWeight + $weight)  < $blockMaxWeight) {
+                $currentWeight += $weight;
+            } else  {
+                $currentWeight += $weight;
+                while ($currentWeight >= $blockMaxWeight) {
+                    // записываем в рез. массив комиссию итерации
+                    $blocksMinFee[$blockNum] = $fee;
+                    $blockNum++;
+                    $currentWeight-=$blockMaxWeight;
+                    $blockMaxWeight = self::BYTES_PER_MEGABYTE;
+                }
+            }
+        }
+
+        // в случае если после последней итерации в мемпуле еще что то остается
+        // записываем в рез. массив с размером комиссии из последнего элемента мемпула
+        if ($currentWeight > 0) {
+            $blocksMinFee[$blockNum] = intval(array_key_last($mempool));
+        }
+
+        return $blocksMinFee;
+    }
+
+    /**
+     * распределяем вес сырого мемпула по размеру комиссии за байт
+     * @return array [fee => weight(vbytes)]
+     * @throws Exception
+     */
+    protected function getMempoolWeightDistribution(): array
+    {
+        // todo-andrey обсудить передавать мемпул как аргумент функции или получать внутри функции напрямую
+        $rawMempool = $this->getRawMempool();
+        $distributedMempool = [];
+        foreach ($rawMempool as $transaction) {
+            $feeInSatoshiPerByte = round(($transaction['fee']/$transaction['vsize'])*100000000);
+            $distributedMempool[$feeInSatoshiPerByte] = $distributedMempool[$feeInSatoshiPerByte]?$distributedMempool[$feeInSatoshiPerByte]+$transaction['vsize']:$transaction['vsize'];
+        }
+        krsort($distributedMempool);
+        return $distributedMempool;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    protected function getRawMempool(): array
+    {
+        $requestData = $this->prepareRequestData('getrawmempool', [true]);
+        return $this->sendRequestJsonRPC($requestData, 'result');
     }
 }
