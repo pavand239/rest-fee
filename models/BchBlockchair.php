@@ -74,7 +74,7 @@ class BchBlockchair extends FeeAbstract
 
     /**
      * рекомендуемая комиссия satoshi/byte (без кэширование)
-     * @return int
+     * @return string
      * @throws Exception
      */
     public function getRecommendedFeeFromApi(): string

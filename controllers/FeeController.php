@@ -9,6 +9,7 @@ use restFee\models\BitcoinCashNodeFee;
 use restFee\models\BitcoinerLiveFee;
 use restFee\models\BitcoinNodeFee;
 use restFee\models\EthBlockchair;
+use restFee\models\EthNodeFee;
 use restFee\models\FeeAbstract;
 use yii\base\InvalidConfigException;
 use yii\rest\Controller;
@@ -23,7 +24,7 @@ use yii\web\NotFoundHttpException;
 class FeeController extends Controller
 {
 
-    /** @var FeeAbstract|BitcoinerLiveFee|EthBlockchair|BchBlockchair|BitcoinNodeFee | BitcoinCashNodeFee */
+    /** @var FeeAbstract|BitcoinerLiveFee|EthBlockchair|BchBlockchair|BitcoinNodeFee|BitcoinCashNodeFee|EthNodeFee */
     public $feeService;
     private array $allowedCurrency = ['BTC', 'ETH', 'BCH'];
 
