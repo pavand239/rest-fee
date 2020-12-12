@@ -46,22 +46,6 @@ class BitcoinerLiveFee extends FeeAbstract
     }
 
     /**
-     * возращает мемпул с кэшированием
-     * @return array
-     */
-    public function getMempool(): array
-    {
-        return Yii::$app->cache->getOrSet(
-            $this->getCacheName('mempool'),
-            function ()
-            {
-                return $this->getMempoolFromApi();
-            },
-            60
-        );
-    }
-
-    /**
      * @return string
      */
     public function getRecommendedFeeFromApi(): string
@@ -89,21 +73,10 @@ class BitcoinerLiveFee extends FeeAbstract
     }
 
     /**
-     * получает текущий мемпул из api
-     * @return array [fee => weight(WU)]
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
-    public function getMempoolFromApi(): array
-    {
-        return $this->sendRequestSimple('GET','mempool/latest', 'mempool');
-    }
-
-    /**
      * возвращает текущий вес мемпула
      * @return float
      */
-    public function getMempoolWeight(): float
+    private function getMempoolWeight(): float
     {
         $mempool = $this->getMempool();
         return array_sum($mempool)/(4*1048576);
@@ -113,7 +86,7 @@ class BitcoinerLiveFee extends FeeAbstract
      * возвращает массив вида [номер блока => мин комиссия для попадания]
      * @return array [blockNum => minFee]
      */
-    public function getBlocksMinFee(): array
+    private function getBlocksMinFee(): array
     {
         // массив мемпула вида [размер комиссии => вес транзакций с такой комиссией в WU ]
         $mempool = $this->getMempool();
@@ -146,5 +119,32 @@ class BitcoinerLiveFee extends FeeAbstract
         }
 
         return $blocksMinFee;
+    }
+
+    /**
+     * возращает мемпул с кэшированием
+     * @return array
+     */
+    private function getMempool(): array
+    {
+        return Yii::$app->cache->getOrSet(
+            $this->getCacheName('mempool'),
+            function ()
+            {
+                return $this->getMempoolFromApi();
+            },
+            60
+        );
+    }
+
+    /**
+     * получает текущий мемпул из api
+     * @return array [fee => weight(WU)]
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    private function getMempoolFromApi(): array
+    {
+        return $this->sendRequestSimple('GET','mempool/latest', 'mempool');
     }
 }

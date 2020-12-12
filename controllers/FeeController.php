@@ -73,16 +73,6 @@ class FeeController extends Controller
     }
 
     /**
-     * возвращает текущий вес мемпула
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function actionMempoolWeight(): array
-    {
-        return ['mempoolWeight' => $this->feeService->getMempoolWeight()];
-    }
-
-    /**
      * возвращает текущую нагрузку сети в процентах
      * @return array
      * @throws NotFoundHttpException
@@ -90,15 +80,5 @@ class FeeController extends Controller
     public function actionLoad(): array
     {
         return ['currentLoad' => $this->feeService->getCurrentLoad()];
-    }
-
-    /**
-     * возвращает массив типа [номер блока => мин комиссия для попадания]
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function actionBlocksMinFee(): array
-    {
-        return $this->feeService->getBlocksMinFee();
     }
 }

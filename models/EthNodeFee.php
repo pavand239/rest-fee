@@ -56,7 +56,7 @@ class EthNodeFee extends FeeAbstract
      * @param array $blocks
      * @return float[]|int[]
      */
-    protected function getAvgGasInfoFromBlocks(array $blocks): array
+    private function getAvgGasInfoFromBlocks(array $blocks): array
     {
         $blocksCount = count($blocks);
         $totalGasLimit = array_sum(ArrayHelper::getColumn($blocks, fn($element)=>hexdec($element['gasLimit'])));
@@ -73,7 +73,7 @@ class EthNodeFee extends FeeAbstract
      * @return array
      * @throws Exception
      */
-    protected function getLastBlocks(int $n = 100): array
+    private function getLastBlocks(int $n = 100): array
     {
         $firstBlockNum = $this->getMostRecentBlockNumber();
         $lastBlockNum = $firstBlockNum - $n;
@@ -90,7 +90,7 @@ class EthNodeFee extends FeeAbstract
      * @return array
      * @throws Exception
      */
-    protected function getBlockByNum(int $n): array
+    private function getBlockByNum(int $n): array
     {
         $requestData = $this->prepareRequestData(
             'eth_getBlockByNumber',
@@ -108,7 +108,7 @@ class EthNodeFee extends FeeAbstract
      * @return int
      * @throws Exception
      */
-    protected function getMostRecentBlockNumber(): int
+    private function getMostRecentBlockNumber(): int
     {
         $requestData = $this->prepareRequestData('eth_blockNumber');
         return hexdec($this->sendRequestJsonRPC($requestData, 'result'));

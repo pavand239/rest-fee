@@ -17,28 +17,13 @@ class BchBlockchair extends FeeAbstract
     }
 
     /**
-     * получить всю статистику из api
-     * @return array
+     * рекомендуемая комиссия satoshi/byte (без кэширование)
+     * @return string
      * @throws Exception|InvalidConfigException
      */
-    public function getStat(): array {
-        return $this->sendRequestSimple('GET','','data');
-    }
-
-    /**
-     * получить вес мемпула (кэширование)
-     * @return float
-     */
-    public function getMempoolWeight(): float
+    public function getRecommendedFeeFromApi(): string
     {
-        return Yii::$app->cache->getOrSet(
-            $this->getCacheName('mempool-weight'),
-            function ()
-            {
-                return $this->getMempoolWeightFromApi();
-            },
-            60
-        );
+        return (string)$this->getStat()['suggested_transaction_fee_per_byte_sat'];
     }
 
     /**
@@ -56,23 +41,37 @@ class BchBlockchair extends FeeAbstract
     }
 
     /**
+     * получить вес мемпула (кэширование)
+     * @return float
+     */
+    private function getMempoolWeight(): float
+    {
+        return Yii::$app->cache->getOrSet(
+            $this->getCacheName('mempool-weight'),
+            function ()
+            {
+                return $this->getMempoolWeightFromApi();
+            },
+            60
+        );
+    }
+
+    /**
      * вес мемпула из api (без кэширования)
      * @return float
      * @throws Exception|InvalidConfigException
      */
-    public function getMempoolWeightFromApi(): float
+    private function getMempoolWeightFromApi(): float
     {
         return $this->getStat()['mempool_size']/self::BYTES_PER_MEGABYTE;
     }
 
     /**
-     * рекомендуемая комиссия satoshi/byte (без кэширование)
-     * @return string
+     * получить всю статистику из api
+     * @return array
      * @throws Exception|InvalidConfigException
      */
-    public function getRecommendedFeeFromApi(): string
-    {
-        return (string)$this->getStat()['suggested_transaction_fee_per_byte_sat'];
+    private function getStat(): array {
+        return $this->sendRequestSimple('GET','','data');
     }
-
 }

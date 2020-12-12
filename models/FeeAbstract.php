@@ -61,46 +61,7 @@ abstract class FeeAbstract
      * @return array ['currentLoad' => int]
      * @throws NotFoundHttpException
      */
-    public function getCurrentLoad(): array
-    {
-        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
-    }
-
-    /**
-     * @return array [fee => weight(WU)]
-     * @throws NotFoundHttpException
-     */
-    public function getMempool(): array
-    {
-        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
-    }
-
-    /**
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function getMempoolFromApi(): array
-    {
-        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
-    }
-
-    /**
-     * @return float
-     * @throws NotFoundHttpException
-     */
-    public function getMempoolWeight(): float
-    {
-        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
-    }
-
-    /**
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function getBlocksMinFee(): array
-    {
-        throw new NotFoundHttpException(self::UNAVAILABLE_METHOD_MESSAGE);
-    }
+    abstract public function getCurrentLoad(): array;
 
     /**
      * @param string $requestData json-rpc params

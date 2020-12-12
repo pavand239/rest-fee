@@ -57,8 +57,6 @@ $config = [
                 '<currency:[a-zA-Z]{3}>' => 'fee/index',
                 'recommended/<currency:[a-zA-Z]{3}>' => 'fee/recommended',
                 'load/<currency:[a-zA-Z]{3}>' => 'fee/load',
-                'mempool-weight/<currency:[a-zA-Z]{3}>' => 'fee/mempool-weight',
-                'blocks-min-fee/<currency:[a-zA-Z]{3}>' => 'fee/blocks-min-fee',
             ],
         ]
     ],

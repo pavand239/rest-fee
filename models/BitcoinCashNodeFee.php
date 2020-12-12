@@ -16,21 +16,6 @@ class BitcoinCashNodeFee extends FeeAbstract
     }
 
     /**
-     * @return float
-     */
-    public function getMempoolWeight(): float
-    {
-        return Yii::$app->cache->getOrSet(
-            $this->getCacheName('mempool-weight'),
-            function ()
-            {
-                return $this->getMempoolWeightFromApi();
-            },
-            60
-        );
-    }
-
-    /**
      * @return int[]
      */
     public function getCurrentLoad(): array
@@ -56,9 +41,24 @@ class BitcoinCashNodeFee extends FeeAbstract
 
     /**
      * @return float
+     */
+    private function getMempoolWeight(): float
+    {
+        return Yii::$app->cache->getOrSet(
+            $this->getCacheName('mempool-weight'),
+            function ()
+            {
+                return $this->getMempoolWeightFromApi();
+            },
+            60
+        );
+    }
+
+    /**
+     * @return float
      * @throws Exception
      */
-    public function getMempoolWeightFromApi(): float
+    private function getMempoolWeightFromApi(): float
     {
         $requestData = $this->prepareRequestData('getmempoolinfo');
         $usage= $this->sendRequestJsonRPC($requestData, 'result.usage');

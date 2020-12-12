@@ -81,7 +81,7 @@ class BitcoinNodeFee extends FeeAbstract
      * @return array
      * @throws Exception
      */
-    public function getBlocksMinFee(): array
+    private function getBlocksMinFee(): array
     {
         $mempool = $this->getMempoolWeightDistribution();
         $blocksMinFee = [];
@@ -120,7 +120,7 @@ class BitcoinNodeFee extends FeeAbstract
      * @return array [fee => weight(vbytes)]
      * @throws Exception
      */
-    protected function getMempoolWeightDistribution(): array
+    private function getMempoolWeightDistribution(): array
     {
         // todo-andrey обсудить передавать мемпул как аргумент функции или получать внутри функции напрямую
         $rawMempool = $this->getRawMempool();
@@ -137,7 +137,7 @@ class BitcoinNodeFee extends FeeAbstract
      * @return array
      * @throws Exception
      */
-    protected function getRawMempool(): array
+    private function getRawMempool(): array
     {
         $requestData = $this->prepareRequestData('getrawmempool', [true]);
         return $this->sendRequestJsonRPC($requestData, 'result');
