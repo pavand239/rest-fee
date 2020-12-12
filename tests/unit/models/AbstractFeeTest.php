@@ -2,11 +2,11 @@
 
 namespace tests\unit\models;
 
-use restFee\components\Config;
+use restFee\models\BitcoinCashNodeFee;
+use restFee\models\BitcoinNodeFee;
+use restFee\models\EthNodeFee;
 use restFee\models\FeeAbstract;
-use Yii;
 use Codeception\Test\Unit;
-use yii\base\InvalidConfigException;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -16,19 +16,13 @@ use yii\web\NotFoundHttpException;
  */
 abstract class AbstractFeeTest extends Unit
 {
-    protected const PARAM_NAME = '_API_MODEL_CLASSNAME';
+    /** @var BitcoinNodeFee|EthNodeFee|BitcoinCashNodeFee */
     protected $feeService;
-    protected $currency;
+    protected string $feeServiceClassName;
 
-    /**
-     * @throws InvalidConfigException
-     */
     public function _before()
     {
-        /** @var Config $config */
-        $config = Yii::$app->get('config');
-        $className = $config->get($this->currency.static::PARAM_NAME);
-        $this->feeService = new $className;
+        $this->feeService = new $this->feeServiceClassName;
     }
 
 
@@ -44,14 +38,6 @@ abstract class AbstractFeeTest extends Unit
     public function testGetCurrentLoad()
     {
         $currentLoad = $this->feeService->getCurrentLoad();
-        $this->assertIsInt($currentLoad['currentLoad']);
+        $this->assertTrue(0<=$currentLoad['currentLoad'] && $currentLoad['currentLoad'] <= 100);
     }
-
-    public function testGetRecommendedFeeFromApi()
-    {
-        $recommendedFee = $this->feeService->getRecommendedFeeFromApi();
-        $this->assertTrue(floatval($recommendedFee)>0);
-    }
-
-
 }

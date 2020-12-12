@@ -19,6 +19,19 @@ class BitcoinerLiveFee extends FeeAbstract
     }
 
     /**
+     * переопределено, т.к. обновление кэша будет реализоваться через консольное приложение по крону
+     * @return array
+     */
+    public function getRecommendedFee(): array
+    {
+        $fee = Yii::$app->cache->get($this->getCacheName('recommended-fee'));
+        if ($fee === false) {
+            throw new UnexpectedValueException('Value from cache expired');
+        }
+        return ['recommendedFee'=>$fee];
+    }
+
+    /**
      * возвращает нагрузку сети с кэшированием
      * @return array ['currentLoad' => string]
      */
@@ -85,7 +98,6 @@ class BitcoinerLiveFee extends FeeAbstract
     {
         return $this->sendRequestSimple('GET','mempool/latest', 'mempool');
     }
-
 
     /**
      * возвращает текущий вес мемпула

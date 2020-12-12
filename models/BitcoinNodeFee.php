@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace restFee\models;
 
+use UnexpectedValueException;
 use Yii;
 use yii\httpclient\Exception;
 
@@ -13,6 +14,19 @@ class BitcoinNodeFee extends FeeAbstract
         $this->currency='BTC';
         $this->baseUrl = require __DIR__ . '/../keys/bitcoinNodeUrl.php';
         parent::__construct();
+    }
+
+    /**
+     * переопределено, т.к. обновление кэша будет реализоваться через консольное приложение по крону
+     * @return array
+     */
+    public function getRecommendedFee(): array
+    {
+        $fee = Yii::$app->cache->get($this->getCacheName('recommended-fee'));
+        if ($fee === false) {
+            throw new UnexpectedValueException('Value from cache expired');
+        }
+        return ['recommendedFee'=>$fee];
     }
 
     /**
@@ -113,7 +127,7 @@ class BitcoinNodeFee extends FeeAbstract
         $distributedMempool = [];
         foreach ($rawMempool as $transaction) {
             $feeInSatoshiPerByte = round(($transaction['fee']/$transaction['vsize'])*100000000);
-            $distributedMempool[$feeInSatoshiPerByte] = $distributedMempool[$feeInSatoshiPerByte]?$distributedMempool[$feeInSatoshiPerByte]+$transaction['vsize']:$transaction['vsize'];
+            $distributedMempool[$feeInSatoshiPerByte] = isset($distributedMempool[$feeInSatoshiPerByte])?$distributedMempool[$feeInSatoshiPerByte]+$transaction['vsize']:$transaction['vsize'];
         }
         krsort($distributedMempool);
         return $distributedMempool;
