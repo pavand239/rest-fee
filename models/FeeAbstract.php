@@ -47,7 +47,12 @@ abstract class FeeAbstract
                 return $this->getRecommendedFeeFromApi();
             },
             60);
-        return ['recommendedFee'=>$fee];
+        return ['recommendedFee'=>
+            [
+                "value" => $fee,
+                "currency" => static::FEE_CURRENCY
+            ]
+        ];
     }
 
     /**

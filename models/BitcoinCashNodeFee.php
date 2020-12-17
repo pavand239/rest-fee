@@ -8,6 +8,8 @@ use yii\httpclient\Exception;
 
 class BitcoinCashNodeFee extends FeeAbstract
 {
+    public const FEE_CURRENCY = 'sat/B';
+
     public function __construct()
     {
         $this->currency='BCH';

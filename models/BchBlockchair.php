@@ -9,6 +9,8 @@ use yii\httpclient\Exception;
 
 class BchBlockchair extends FeeAbstract
 {
+    public const FEE_CURRENCY = 'sat/B';
+
     public function __construct()
     {
         $this->baseUrl = 'https://api.blockchair.com/bitcoin-cash/stats';

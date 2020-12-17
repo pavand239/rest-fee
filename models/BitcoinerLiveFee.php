@@ -11,6 +11,8 @@ use yii\httpclient\Exception;
 
 class BitcoinerLiveFee extends FeeAbstract
 {
+    public const FEE_CURRENCY = 'sat/vB';
+
     public function __construct()
     {
         $this->baseUrl = 'https://bitcoiner.live/api';
@@ -28,7 +30,12 @@ class BitcoinerLiveFee extends FeeAbstract
         if ($fee === false) {
             throw new UnexpectedValueException('Value from cache expired');
         }
-        return ['recommendedFee'=>$fee];
+        return ['recommendedFee'=>
+            [
+                "value" => $fee,
+                "currency" => static::FEE_CURRENCY
+            ]
+        ];
     }
 
     /**

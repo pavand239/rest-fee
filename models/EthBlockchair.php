@@ -19,7 +19,9 @@ use yii\httpclient\Exception;
  * далее переводим получившееся число из wei в ETH
  * Нагрузку сети рассчитываем по формуле ср. кол-во использованного газа/ср. лимит газа блока
  */
-class EthBlockchair extends FeeAbstract {
+class EthBlockchair extends FeeAbstract
+{
+    public const FEE_CURRENCY = 'ETH';
 
     public function __construct()
     {
