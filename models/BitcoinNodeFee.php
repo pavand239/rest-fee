@@ -112,7 +112,6 @@ class BitcoinNodeFee extends FeeAbstract
     {
         // todo-andrey обсудить передавать мемпул как аргумент функции или получать внутри функции напрямую
         $rawMempool = $this->getRawMempool();
-        var_dump(count($rawMempool));
         $distributedMempool = [];
         foreach ($rawMempool as $transaction) {
             $feeInSatoshiPerByte = round(($transaction['fee']/$transaction['vsize'])*100000000);

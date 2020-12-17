@@ -16,6 +16,8 @@ services:
       - app-network
     volumes:
       - ./:/var/www
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./docker/php/logs/:/var/log/php/
   nginx:
     image: nginx:latest
     tty: true

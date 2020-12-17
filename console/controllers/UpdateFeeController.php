@@ -25,7 +25,6 @@ class UpdateFeeController extends Controller
         /** @var BitcoinNodeFee|BitcoinerLiveFee $btcModel */
         $btcModel = new $className;
         $recommendedFee = $btcModel->getRecommendedFeeFromApi();
-        echo $recommendedFee;
         Yii::$app->cache->set(
             $btcModel->getCacheName('recommended-fee'),
             $recommendedFee,
