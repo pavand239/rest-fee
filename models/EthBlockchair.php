@@ -75,8 +75,9 @@ class EthBlockchair extends FeeAbstract {
      * получаем данные последних 100 сгенерированных блоков из апи
      * считаем средние значения totalFee, gasUsed, gasLimit
      * остальные данные отбрасываем
-     * @return array
-     * @throws Exception|InvalidConfigException
+     * @return float[]|int[]
+     * @throws Exception
+     * @throws InvalidConfigException
      */
     private function getBlocksInfoFromApi(): array
     {

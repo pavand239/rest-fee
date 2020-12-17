@@ -52,18 +52,6 @@ class BitcoinNodeFee extends FeeAbstract
     }
 
     /**
-     * @return string
-     * @throws Exception
-     * @deprecated
-     */
-    public function getRecommendedFeeFromApi_deprecated(): string
-    {
-        $requestData = $this->prepareRequestData('estimatesmartfee',[1]);
-        $feeBtcPerKB = $this->sendRequestJsonRPC($requestData, 'result.feerate');
-        return (string)intval(($feeBtcPerKB*(10**8))/1000);
-    }
-
-    /**
      * @return int
      * @throws Exception
      */
@@ -124,6 +112,7 @@ class BitcoinNodeFee extends FeeAbstract
     {
         // todo-andrey обсудить передавать мемпул как аргумент функции или получать внутри функции напрямую
         $rawMempool = $this->getRawMempool();
+        var_dump(count($rawMempool));
         $distributedMempool = [];
         foreach ($rawMempool as $transaction) {
             $feeInSatoshiPerByte = round(($transaction['fee']/$transaction['vsize'])*100000000);

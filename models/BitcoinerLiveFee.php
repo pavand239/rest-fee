@@ -54,25 +54,6 @@ class BitcoinerLiveFee extends FeeAbstract
     }
 
     /**
-     * возвращает размер рекомендованной комисии из api
-     * @return string
-     * @throws Exception
-     * @throws UnexpectedValueException
-     * @deprecated
-     */
-    public function getRecommendedFeeFromApi_deprecated(): string
-    {
-        $response = $this->client->get('fees/estimates/latest', ['confidence' => 0.9])->send();
-        if (!$response->isOk) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        if (!isset($response->data['estimates']['30']['sat_per_vbyte'])) {
-            throw new UnexpectedValueException('Response is not ok');
-        }
-        return (string)$response->data['estimates']['30']['sat_per_vbyte'];
-    }
-
-    /**
      * возвращает текущий вес мемпула
      * @return float
      */

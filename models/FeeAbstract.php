@@ -13,8 +13,6 @@ use yii\web\NotFoundHttpException;
 
 abstract class FeeAbstract
 {
-    /** @var string сообщение об ошибке при недоступности метода для выбранной валюты */
-    protected const UNAVAILABLE_METHOD_MESSAGE = 'Method unavailable for this currency';
     /** @var string базовый url api */
     protected string $baseUrl;
     /** @var string код валюты */
@@ -99,7 +97,7 @@ abstract class FeeAbstract
             ->setUrl($url)
             ->setData($data)
             ->setFormat(Client::FORMAT_JSON)
-            ->setHeaders(['Content-Type' => 'application/json'])
+            ->addHeaders(['Content-Type' => 'application/json'])
             ->send();
 
         if (!$response->isOk) {
