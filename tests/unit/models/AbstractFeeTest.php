@@ -29,7 +29,7 @@ abstract class AbstractFeeTest extends Unit
     public function testGetRecommendedFee()
     {
         $recommendedFee = $this->feeService->getRecommendedFee();
-        $this->assertTrue(floatval($recommendedFee['recommendedFee'])>0);
+        $this->assertTrue(floatval($recommendedFee['recommendedFee']['value'])>0);
     }
 
     /**
