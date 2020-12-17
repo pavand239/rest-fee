@@ -9,10 +9,9 @@ use yii\httpclient\Exception;
 
 class BitcoinNodeFee extends FeeAbstract
 {
-    public const FEE_CURRENCY = 'sat/vB';
-
     public function __construct()
     {
+        $this->feeCurrency = 'sat/vB';
         $this->currency='BTC';
         $this->baseUrl = require __DIR__ . '/../keys/bitcoinNodeUrl.php';
         parent::__construct();
@@ -31,7 +30,7 @@ class BitcoinNodeFee extends FeeAbstract
         return ['recommendedFee'=>
             [
                 "value" => $fee,
-                "currency" => static::FEE_CURRENCY
+                "currency" => $this->feeCurrency
             ]
         ];
     }

@@ -21,12 +21,11 @@ use yii\httpclient\Exception;
  */
 class EthBlockchair extends FeeAbstract
 {
-    public const FEE_CURRENCY = 'ETH';
-
     public function __construct()
     {
         $this->baseUrl = "https://api.blockchair.com/ethereum/blocks";
         $this->currency = 'ETH';
+        $this->feeCurrency = 'ETH';
         parent::__construct();
     }
 

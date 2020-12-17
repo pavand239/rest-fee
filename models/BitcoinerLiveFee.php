@@ -11,10 +11,9 @@ use yii\httpclient\Exception;
 
 class BitcoinerLiveFee extends FeeAbstract
 {
-    public const FEE_CURRENCY = 'sat/vB';
-
     public function __construct()
     {
+        $this->feeCurrency = 'sat/vB';
         $this->baseUrl = 'https://bitcoiner.live/api';
         $this->currency = 'BTC';
         parent::__construct();
@@ -33,7 +32,7 @@ class BitcoinerLiveFee extends FeeAbstract
         return ['recommendedFee'=>
             [
                 "value" => $fee,
-                "currency" => static::FEE_CURRENCY
+                "currency" => $this->feeCurrency
             ]
         ];
     }

@@ -17,6 +17,8 @@ abstract class FeeAbstract
     protected string $baseUrl;
     /** @var string код валюты */
     protected string $currency;
+    /** @var string единица измерения комиссии */
+    protected string $feeCurrency;
 
     public const BYTES_PER_MEGABYTE = 1048576;
     /** @var Client  */
@@ -50,7 +52,7 @@ abstract class FeeAbstract
         return ['recommendedFee'=>
             [
                 "value" => $fee,
-                "currency" => static::FEE_CURRENCY
+                "currency" => $this->feeCurrency
             ]
         ];
     }

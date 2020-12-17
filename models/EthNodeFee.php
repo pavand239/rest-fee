@@ -10,10 +10,9 @@ use yii\httpclient\Exception;
 
 class EthNodeFee extends FeeAbstract
 {
-    public const FEE_CURRENCY = 'ETH';
-
     public function __construct()
     {
+        $this->feeCurrency = 'ETH';
         $this->baseUrl = require __DIR__ . '/../keys/ethNodeUrl.php';
         $this->currency = 'ETH';
         parent::__construct();
