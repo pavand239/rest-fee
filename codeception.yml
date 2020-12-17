@@ -10,6 +10,10 @@ settings:
     memory_limit: 1024M
     debug: true
 bootstrap: _bootstrap.php
+coverage:
+    enabled: true
+    include:
+        - models/*
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
